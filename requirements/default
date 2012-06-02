@@ -5,3 +5,5 @@ vectorformats
 django-extensions
 south
 django-ajaxutils
+pygeocoder
+requests
