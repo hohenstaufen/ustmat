@@ -29,3 +29,7 @@ def arbor_api_wikipedia_query(name):
     thumb = xml.findAll('thumbnail')[0].text
     big = xml.findAll('file')[1].text
     return img.content
+
+
+def bananas():
+    pass

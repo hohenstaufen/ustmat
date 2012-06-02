@@ -7,3 +7,4 @@ south
 django-ajaxutils
 pygeocoder
 requests
+pil

@@ -16,9 +16,11 @@ class Shape(models.Model):
     class Meta:
         db_table = u'stgd'
 
+
 class Image(models.Model):
     file = models.ImageField(upload_to='image/')
-    short_url = models.URLField()
+    small_url = models.URLField()
     big_url = models.URLField()
-    botanical = models.ForeignKey(Shape)
+    botanical = models.ManyToManyField(Shape)
+
 

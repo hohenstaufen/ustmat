@@ -17,7 +17,6 @@ def arbor_api_geocode(request):
     address_city = address.split(' ')[-1]
     if address_city.lower() is not 'toronto':
         address += " Toronto"
-    import pdb; pdb.set_trace()
     coordinates = Geocoder.geocode(address)
     coordinates = coordinates[0].coordinates
     return HttpResponse(
