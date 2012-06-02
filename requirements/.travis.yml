@@ -1,0 +1,22 @@
+rvm:
+- 1.9.3
+python:
+- 2.7
+branches:
+  only:
+      - develop
+      install:
+      - sudo apt-get update
+      - sudo apt-get install postgresql-9.1-postgis python-gdal
+      - sudo pip install -r requirements/base.txt
+      - sudo pip install -r requirements/test.txt
+      before_script:
+      - sudo su postgres -c "createdb template_postgis" || true
+      - sudo su postgres -c "createlang plpgsql template_postgis" || true
+      - sudo su postgres -c "psql -d template_postgis -f `find /usr/share -name postgis.sql -print -quit`" || true
+      - sudo su postgres -c "psql -d template_postgis -f `find /usr/share -name spatial_ref_sys.sql -print -quit`" || true
+      - sudo su postgres -c "createdb -T template_postgis hsmapper" || true
+      - echo "standard_conforming_strings = off" | sudo tee -a /etc/postgresql/9.1/main/postgresql.conf
+      - sudo /etc/init.d/postgresql-9.1 reload
+      script:
+      - python hsmapper/manage.py test --noinput core
