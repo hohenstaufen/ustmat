@@ -26,7 +26,13 @@ def arbor_api_geocode(request):
         })
     )
 
+
+def arbor_api_botanical_image(request):
+    """
+    Returns a botanical description
+    """
+    botanical_name = request.GET.get('botanical')
+    Image.objects.get(botanical=botanical_name)
+
 def arbor_test_view(request):
-    from .helpers import *
-    bananas()
     return HttpResponse('1')

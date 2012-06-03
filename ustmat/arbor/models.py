@@ -21,6 +21,7 @@ class Image(models.Model):
     file = models.ImageField(upload_to='image/')
     small_url = models.URLField()
     big_url = models.URLField()
-    botanical = models.ManyToManyField(Shape)
+    botanical_name = models.CharField(max_length=254, blank=True)
+
 
 
