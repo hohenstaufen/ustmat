@@ -1,0 +1,76 @@
+<html>
+<head>
+    <title>Urban Street Tree Mobile Application Toronto</title>
+    <script src="http://openlayers.org/api/OpenLayers.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+    function setHTML(response) {
+        console.log('response', a = response)
+    }
+    var getMap = function (lat,long) {
+        var mapOptions = {
+            controls: []
+        }
+                ,icon;
+        map = new OpenLayers.Map('map', mapOptions);
+        map.numZoomLevels = 20;
+        map.addControl(new OpenLayers.Control.PanZoomBar({
+            position: new OpenLayers.Pixel(2, 20)
+        }));
+        map.addControl(new OpenLayers.Control.Navigation());
+        demolayer = new OpenLayers.Layer.WMS(
+                "toronto:stgd", "/geoserver/gwc/service/wms",
+                {layers: 'toronto', format: 'image/png' },
+                { tileSize: new OpenLayers.Size(256, 256)});
+        map.addLayer(demolayer);
+
+        map.zoomToExtent(new OpenLayers.Bounds(-79.637641, 43.58650043, -79.12140016, 43.83958469));
+//        console.log('long', long, 'lat', lat)
+        map.setCenter(new OpenLayers.LonLat(long,lat), 14);
+
+        var markers = new OpenLayers.Layer.Markers("Markers");
+        map.addLayer(markers);
+
+        var size = new OpenLayers.Size(21,25);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+        icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+        markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(long,lat),icon));
+
+        map.events.register('click', map, function (e) {
+            var params = {
+                REQUEST: "GetFeatureInfo",
+                EXCEPTIONS: "application/vnd.ogc.se_xml",
+                BBOX: map.getExtent().toBBOX(),
+                X: e.xy.x,
+                Y: e.xy.y,
+                INFO_FORMAT: 'text/html',
+                QUERY_LAYERS: map.layers[0].params.LAYERS,
+                FEATURE_COUNT: 50,
+                Layers: 'toronto:stgd',
+                Styles: '',
+                Srs: 'EPSG:4326',
+                WIDTH: map.size.w,
+                HEIGHT: map.size.h,
+                format: "image/png" };
+            OpenLayers.loadURL("/geoserver/gwc/service/wms", params, this, setHTML);
+            OpenLayers.Event.stop(e);
+        });
+    };
+</script>
+<div style="width:100%; height:100%" id="map"></div>
+<script type="text/javascript">
+    var lat = getUrlVars()["lat"]
+            , long = getUrlVars()["long"];
+    getMap(lat,long);
+</script>
+</body>
+</html>
