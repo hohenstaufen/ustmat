@@ -6,6 +6,7 @@ from pygeocoder import Geocoder
 from django.conf import settings
 from .models import Image, Shape
 import simplejson
+from django.views.static import serve
 
 def arbor_index(request):
     pass
@@ -35,7 +36,7 @@ def arbor_api_botanical_image(request):
     """
     botanical_name = request.GET.get('botanical')
     image = Image.objects.get(botanical_name=botanical_name)
-    return HttpResponse(settings.STATIC_URL+image.file.name)
+    return serve(request, settings.STATIC_URL+image.file.name, document_root=settings.MEDIA_ROOT)
 
 
 def arbor_comments_list(request):
@@ -49,4 +50,3 @@ def arbor_comments_add(request):
     tree = Shape.objects.get(gid=gid)
     return render_to_response('arbor/comments_add.html', {'tree': tree,},
         context_instance=RequestContext(request))
-    pass
