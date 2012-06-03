@@ -36,7 +36,7 @@ def arbor_api_botanical_image(request):
     """
     botanical_name = request.GET.get('botanical')
     image = Image.objects.get(botanical_name=botanical_name)
-    return serve(request, settings.STATIC_URL+image.file.name, document_root=settings.MEDIA_ROOT)
+    return serve(request, image.file.name, document_root=settings.STATIC_ROOT+"/image/")
 
 
 def arbor_comments_list(request):
