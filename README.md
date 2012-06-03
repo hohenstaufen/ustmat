@@ -97,10 +97,17 @@ geocoding and tree informations
 
 
 Installation
----------------------
+------------
 
 To install the software you'll need a running Geoserver.
 We've made a database dump available on the downloads section
 of this reposistory. For comments, street names lookup and pictures
 you'll need to run the django app.
 More detailed instructions will follow.
+
+
+Docs
+----
+
+You will find some docs here in the future, in the meantime you can 
+watch our faboulous and awesome presentation [here](https://speakerdeck.com/u/hohenstaufen/p/rhok-ustmat)
