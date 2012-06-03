@@ -1,9 +1,11 @@
-<html>
-<head>
-    <title>Urban Street Tree Mobile Application Toronto</title>
-    <script src="http://openlayers.org/api/OpenLayers.js"></script>
-</head>
+<html><head>
+    <title>Know your trees</title>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+<style type="text/css"></style><link rel="stylesheet" type="text/css" href="http://openlayers.org/api/theme/default/style.css"></head>
 <body>
+
 <script type="text/javascript">
     function getUrlVars() {
         var vars = {};
@@ -13,29 +15,28 @@
         return vars;
     }
 
-    function setHTML(response) {
-        console.log('response', a = response)
-    }
     var getMap = function (lat,long) {
+
         var mapOptions = {
             controls: []
         }
                 ,icon;
         map = new OpenLayers.Map('map', mapOptions);
-        map.numZoomLevels = 20;
+        map.numZoomLevels = 25;
         map.addControl(new OpenLayers.Control.PanZoomBar({
-            position: new OpenLayers.Pixel(2, 20)
+            position: new OpenLayers.Pixel(15, 25)
         }));
-        map.addControl(new OpenLayers.Control.Navigation());
+
+        map.addControl(new OpenLayers.Control.TouchNavigation());
         demolayer = new OpenLayers.Layer.WMS(
                 "toronto:stgd", "/geoserver/gwc/service/wms",
-                {layers: 'toronto', format: 'image/png' },
+                {layers: 'toronto', format: 'image/png', outputformat:'json' },
                 { tileSize: new OpenLayers.Size(256, 256)});
         map.addLayer(demolayer);
 
         map.zoomToExtent(new OpenLayers.Bounds(-79.637641, 43.58650043, -79.12140016, 43.83958469));
-//        console.log('long', long, 'lat', lat)
-        map.setCenter(new OpenLayers.LonLat(long,lat), 14);
+
+        map.setCenter(new OpenLayers.LonLat(long,lat), 18);
 
         var markers = new OpenLayers.Layer.Markers("Markers");
         map.addLayer(markers);
@@ -45,32 +46,81 @@
         icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
         markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(long,lat),icon));
 
-        map.events.register('click', map, function (e) {
-            var params = {
-                REQUEST: "GetFeatureInfo",
-                EXCEPTIONS: "application/vnd.ogc.se_xml",
-                BBOX: map.getExtent().toBBOX(),
-                X: e.xy.x,
-                Y: e.xy.y,
-                INFO_FORMAT: 'text/html',
-                QUERY_LAYERS: map.layers[0].params.LAYERS,
-                FEATURE_COUNT: 50,
-                Layers: 'toronto:stgd',
-                Styles: '',
-                Srs: 'EPSG:4326',
-                WIDTH: map.size.w,
-                HEIGHT: map.size.h,
-                format: "image/png" };
-            OpenLayers.loadURL("/geoserver/gwc/service/wms", params, this, setHTML);
-            OpenLayers.Event.stop(e);
+        info = new OpenLayers.Control.WMSGetFeatureInfo({
+            url: '/geoserver/gwc/service/wms',
+            title: 'Identify features by clicking',
+            layers: [demolayer],
+            queryVisible: true,
+            eventListeners: {
+                getfeatureinfo: function(event) {
+                    var data = $.parseJSON(event.text)
+                      , trees = data.street_tree_general_data_wgs84
+                      , trees_container = $("<div/>").addClass('container-fluid').append(
+                                    $('<div/>').addClass('marketing').append($("<h1/>").addClass('text-center').text("Trees"))
+                            ).append('<hr/>').append($('<span />').addClass('btn btn-primary').text('back').on('click',function(){
+                                $('#divpro').html(trees_container).fadeOut('slow');
+                            }));
+
+                    if (!trees)
+                        return false;
+
+                    $.each(trees, function(i, tree) {
+                        if (tree !== null && tree.attributes) {
+                            var table = $("<table/>").addClass("table table-bordered").attr('style','width: 600px; margin: auto;');
+                            table.append(
+                                    $("<tr/>").append($("<td/>").text("Botanical: ")).append($("<td/>").text(tree.attributes.botanical_))
+                                ).append(
+                                    $("<tr/>").append($("<td/>").text("Common name: ")).append($("<td/>").text(tree.attributes.common_nam))
+                                ).append(
+                                    $("<tr/>").append($("<td/>").text("Wikipedia page: ")).append($("<td/>").html("<a 
+href='http://en.wikipedia.org/w/index.php?search=" + escape(tree.attributes.botanical_) + "'>" + tree.attributes.botanical_ + "</a>"))
+                                ).append(
+                                    $("<tr/>").append($("<td/>").text("Leaf image: ")).append($("<td/>").html("<img alt='leaf image' 
+src='/arbor/api/image?botanical=" + tree.attributes.botanical_ + "' />"))
+                                ).append(
+                                    $("<tr/>").append($("<td/>").text("Comments: 
+")).append($("<td/>").addClass("comment-list").attr("data-gid", tree.attributes.gid))
+                                ).append(
+                                    $("<tr/>").append($("<td/>")).append($("<td/>").addClass("comment-add").attr("data-gid", 
+tree.attributes.gid))
+                            );
+                            trees_container.append(table).append($("<hr>"));
+                        }
+                    });
+
+                    $('#divpro').html(trees_container).fadeIn('slow');
+//                    $('#myModal').modal('show');
+
+                    $(".comment-list").each(function(i, elem) {
+                        $(elem).load("/arbor/comments/list/?gid="+$(elem).data("gid"))
+                    });
+
+                    $(".comment-add").each(function(i, elem) {
+                        $(elem).append($("<iframe/>").attr("style", "width: 100%; height: 400px; border:none;").attr("src", 
+"/arbor/comments/add/?gid="+$(elem).data("gid")));
+                    });
+                }
+            }
         });
+
+        map.addControl(info);
+        info.activate();
+
     };
+
 </script>
-<div style="width:100%; height:100%" id="map"></div>
+
+<div id="map" >
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-modal.js"></script>
 <script type="text/javascript">
     var lat = getUrlVars()["lat"]
             , long = getUrlVars()["long"];
     getMap(lat,long);
 </script>
-</body>
-</html>
+
+
+</body></html>
