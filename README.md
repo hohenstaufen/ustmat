@@ -88,10 +88,19 @@ Technologies involved
 ---------------------
 
 * [Geoserver](http://geoserver.org/) with 
-[OpenStreetMap](http://www.openstreetmap.org/) layers of Toronto region
-* [Django](https://www.djangoproject.com/) providing API for comments, 
+[OpenStreetMap](http://www.openstreetmap.org/) Street maps for the Greater Toronto Area
+* [Django](https://www.djangoproject.com/) providing API for comments,
 geocoding and tree informations
 * [PostgreSQL](http://www.postgresql.org/) with 
 [PostGIS](http://postgis.refractions.net/) for 
 [Street Tree Data](http://www1.toronto.ca/wps/portal/open_data/open_data_item_details?vgnextoid=5af95104c26f3310VgnVCM1000003dd60f89RCRD&vgnextchannel=6e886aa8cc819210VgnVCM10000067d60f89RCRD)
 
+
+Installation
+---------------------
+
+To install the software you'll need a running Geoserver.
+We've made a database dump available on the downloads section
+of this reposistory. For comments, street names lookup and pictures
+you'll need to run the django app.
+More detailed instructions will follow.
