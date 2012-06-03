@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from pygeocoder import Geocoder
 from django.conf import settings
-from .models import Image
+from .models import Image, Shape
 import simplejson
 
 def arbor_index(request):
@@ -37,3 +37,16 @@ def arbor_api_botanical_image(request):
     image = Image.objects.get(botanical_name=botanical_name)
     return HttpResponse(settings.STATIC_URL+image.file.name)
 
+
+def arbor_comments_list(request):
+    gid = request.GET.get('gid')
+    tree = Shape.objects.get(gid=gid)
+    return render_to_response('arbor/comments_list.html', {'tree': tree,},
+        context_instance=RequestContext(request))
+
+def arbor_comments_add(request):
+    gid = request.GET.get('gid')
+    tree = Shape.objects.get(gid=gid)
+    return render_to_response('arbor/comments_add.html', {'tree': tree,},
+        context_instance=RequestContext(request))
+    pass
