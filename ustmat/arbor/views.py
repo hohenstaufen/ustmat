@@ -3,6 +3,8 @@ from django.template import RequestContext
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from pygeocoder import Geocoder
+from django.conf import settings
+from .models import Image
 import simplejson
 
 def arbor_index(request):
@@ -32,7 +34,6 @@ def arbor_api_botanical_image(request):
     Returns a botanical description
     """
     botanical_name = request.GET.get('botanical')
-    Image.objects.get(botanical=botanical_name)
+    image = Image.objects.get(botanical_name=botanical_name)
+    return HttpResponse(settings.STATIC_URL+image.file.name)
 
-def arbor_test_view(request):
-    return HttpResponse('1')
