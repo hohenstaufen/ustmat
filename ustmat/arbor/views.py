@@ -28,4 +28,5 @@ def arbor_api_geocode(request):
 
 def arbor_test_view(request):
     from .helpers import *
-    return HttpResponse(arbor_api_wikipedia_query('Alnus'), mimetype="image/png")
+    bananas()
+    return HttpResponse('1')
