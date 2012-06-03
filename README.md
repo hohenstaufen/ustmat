@@ -44,7 +44,7 @@ Constraints:
 ------------
 
 The data is now available via Toronto Open 
-[www.toronto.ca/open](www.toronto.ca/open). The limitiations of the 
+[www.toronto.ca/open](http://www.toronto.ca/open). The limitiations of the 
 data are available in the information notes. 
 
 
@@ -69,7 +69,7 @@ Trees Near You. As well as the name of the tree the app uses the size
 of the tree with the species to provide a calculation of the value of 
 the ecological benefits of the tree annually.  This part of the New 
 York application is based on data from the site 
-[www.treebenefits.com/calculator/](www.treebenefits.com/calculator/).
+[www.treebenefits.com/calculator/](http://www.treebenefits.com/calculator/).
 
 This tree benefits site could be used for a Toronto application as 
 well, the values associated with the northeast U.S. are generally 
@@ -79,7 +79,7 @@ application.
 
 Parks, Forestry and Recreation worked with the U.S. Forest Service to 
 estimate ecological benefits for the entire urban forest of Toronto 
-recently, [www.toronto.ca/trees/pdfs/Every_Tree_Counts.pdf](www.toronto.ca/trees/pdfs/Every_Tree_Counts.pdf)
+recently, [www.toronto.ca/trees/pdfs/Every_Tree_Counts.pdf](http://www.toronto.ca/trees/pdfs/Every_Tree_Counts.pdf)
 .  Providing this information on a tree by tree basis can be very 
 helpful for residents.
 
